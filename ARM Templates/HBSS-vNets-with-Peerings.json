@@ -1,0 +1,386 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {},
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.Network/virtualNetworks",
+            "apiVersion": "2020-11-01",
+            "name": "vNet-HBSS-MGMT",
+            "location": "uksouth",
+            "properties": {
+                "addressSpace": {
+                    "addressPrefixes": [
+                        "10.254.0.0/16"
+                    ]
+                },
+                "enableDdosProtection": false
+            }
+        },
+        {
+            "type": "Microsoft.Network/virtualNetworks/subnets",
+            "apiVersion": "2020-11-01",
+            "name": "vNet-HBSS-MGMT/AzureBastionSubnet",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', 'vNet-HBSS-MGMT')]"
+            ],
+            "properties": {
+                "addressPrefix": "10.254.254.192/26",
+                "delegations": [],
+                "privateEndpointNetworkPolicies": "Enabled",
+                "privateLinkServiceNetworkPolicies": "Enabled"
+            }
+        },
+        {
+            "type": "Microsoft.Network/virtualNetworks/subnets",
+            "apiVersion": "2020-11-01",
+            "name": "vNet-HBSS-MGMT/GatewaySubnet",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', 'vNet-HBSS-MGMT')]"
+            ],
+            "properties": {
+                "addressPrefix": "10.254.0.0/24",
+                "serviceEndpoints": [],
+                "delegations": [],
+                "privateEndpointNetworkPolicies": "Enabled",
+                "privateLinkServiceNetworkPolicies": "Enabled"
+            }
+        },
+
+
+        {
+            "type": "Microsoft.Network/virtualNetworks",
+            "apiVersion": "2020-11-01",
+            "name": "vNet-HBSS-DCC",
+            "location": "uksouth",
+            "properties": {
+                "addressSpace": {
+                    "addressPrefixes": [
+                        "10.0.0.0/16"
+                    ]
+                },
+                "enableDdosProtection": false
+            }
+        },
+        {
+            "type": "Microsoft.Network/virtualNetworks/subnets",
+            "apiVersion": "2020-11-01",
+            "name": "vNet-HBSS-DCC/sn-hbss-dcc-application",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', 'vNet-HBSS-DCC')]"
+            ],
+            "properties": {
+                "addressPrefix": "10.0.3.0/24",
+                "delegations": [],
+                "privateEndpointNetworkPolicies": "Enabled",
+                "privateLinkServiceNetworkPolicies": "Enabled"
+            }
+        },
+        {
+            "type": "Microsoft.Network/virtualNetworks/subnets",
+            "apiVersion": "2020-11-01",
+            "name": "vNet-HBSS-DCC/sn-hbss-dcc-core",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', 'vNet-HBSS-DCC')]",
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'vNet-HBSS-DCC', 'sn-hbss-dcc-application')]"
+            ],
+            "properties": {
+                "addressPrefix": "10.0.1.0/24",
+                "delegations": [],
+                "privateEndpointNetworkPolicies": "Enabled",
+                "privateLinkServiceNetworkPolicies": "Enabled"
+            }
+        },
+        {
+            "type": "Microsoft.Network/virtualNetworks/subnets",
+            "apiVersion": "2020-11-01",
+            "name": "vNet-HBSS-DCC/sn-hbss-dcc-presentation",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', 'vNet-HBSS-DCC')]",
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'vNet-HBSS-DCC', 'sn-hbss-dcc-core')]"
+            ],
+            "properties": {
+                "addressPrefix": "10.0.5.0/24",
+                "delegations": [],
+                "privateEndpointNetworkPolicies": "Enabled",
+                "privateLinkServiceNetworkPolicies": "Enabled"
+            }
+        },
+        {
+            "type": "Microsoft.Network/virtualNetworks/subnets",
+            "apiVersion": "2020-11-01",
+            "name": "vNet-HBSS-DCC/sn-hbss-dcc-probes",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', 'vNet-HBSS-DCC')]",
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'vNet-HBSS-DCC', 'sn-hbss-dcc-presentation')]"
+            ],
+            "properties": {
+                "addressPrefix": "10.0.2.0/24",
+                "delegations": [],
+                "privateEndpointNetworkPolicies": "Enabled",
+                "privateLinkServiceNetworkPolicies": "Enabled"
+            }
+        },
+        {
+            "type": "Microsoft.Network/virtualNetworks/subnets",
+            "apiVersion": "2020-11-01",
+            "name": "vNet-HBSS-DCC/sn-hbss-dcc-reception",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', 'vNet-HBSS-DCC')]",
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'vNet-HBSS-DCC', 'sn-hbss-dcc-probes')]"
+            ],
+            "properties": {
+                "addressPrefix": "10.0.4.0/24",
+                "delegations": [],
+                "privateEndpointNetworkPolicies": "Enabled",
+                "privateLinkServiceNetworkPolicies": "Enabled"
+            }
+        },
+
+
+        {
+            "type": "Microsoft.Network/virtualNetworks",
+            "apiVersion": "2020-11-01",
+            "name": "vNet-HBSS-SITE01",
+            "location": "uksouth",
+            "properties": {
+                "addressSpace": {
+                    "addressPrefixes": [
+                        "10.1.0.0/16"
+                    ]
+                },
+                "enableDdosProtection": false
+            }
+        },
+        {
+            "type": "Microsoft.Network/virtualNetworks/subnets",
+            "apiVersion": "2020-11-01",
+            "name": "vNet-HBSS-SITE01/sn-hbss-site01-dmz",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', 'vNet-HBSS-SITE01')]"
+            ],
+            "properties": {
+                "addressPrefix": "10.1.5.0/24",
+                "delegations": [],
+                "privateEndpointNetworkPolicies": "Enabled",
+                "privateLinkServiceNetworkPolicies": "Enabled"
+            }
+        },
+        {
+            "type": "Microsoft.Network/virtualNetworks/subnets",
+            "apiVersion": "2020-11-01",
+            "name": "vNet-HBSS-SITE01/sn-hbss-site01-core",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', 'vNet-HBSS-SITE01')]",
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'vNet-HBSS-SITE01', 'sn-hbss-site01-dmz')]"
+            ],
+            "properties": {
+                "addressPrefix": "10.1.1.0/24",
+                "delegations": [],
+                "privateEndpointNetworkPolicies": "Enabled",
+                "privateLinkServiceNetworkPolicies": "Enabled"
+            }
+        },
+
+        {
+            "type": "Microsoft.Network/virtualNetworks",
+            "apiVersion": "2020-11-01",
+            "name": "vNet-HBSS-SITE02",
+            "location": "uksouth",
+            "properties": {
+                "addressSpace": {
+                    "addressPrefixes": [
+                        "10.2.0.0/16"
+                    ]
+                },
+                "enableDdosProtection": false
+            }
+        },
+        {
+            "type": "Microsoft.Network/virtualNetworks/subnets",
+            "apiVersion": "2020-11-01",
+            "name": "vNet-HBSS-SITE02/sn-hbss-site02-dmz",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', 'vNet-HBSS-SITE02')]"
+            ],
+            "properties": {
+                "addressPrefix": "10.2.5.0/24",
+                "delegations": [],
+                "privateEndpointNetworkPolicies": "Enabled",
+                "privateLinkServiceNetworkPolicies": "Enabled"
+            }
+        },
+        {
+            "type": "Microsoft.Network/virtualNetworks/subnets",
+            "apiVersion": "2020-11-01",
+            "name": "vNet-HBSS-SITE02/sn-hbss-site02-core",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', 'vNet-HBSS-SITE02')]",
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'vNet-HBSS-SITE02', 'sn-hbss-site02-dmz')]"
+            ],
+            "properties": {
+                "addressPrefix": "10.2.1.0/24",
+                "delegations": [],
+                "privateEndpointNetworkPolicies": "Enabled",
+                "privateLinkServiceNetworkPolicies": "Enabled"
+            }
+        },
+        
+        {
+            "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+            "apiVersion": "2020-11-01",
+            "name": "vNet-HBSS-MGMT/peering-mgmt-to-dcc",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', 'vNet-HBSS-MGMT')]",
+                "[resourceId('Microsoft.Network/virtualNetworks', 'vNet-HBSS-DCC')]",
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'vNet-HBSS-DCC', 'sn-hbss-dcc-reception')]"
+            ],
+            "properties": {
+                "peeringState": "Connected",
+                "remoteVirtualNetwork": {
+                    "id": "[resourceId('Microsoft.Network/virtualNetworks', 'vNet-HBSS-DCC')]"
+                },
+                "allowVirtualNetworkAccess": true,
+                "allowForwardedTraffic": false,
+                "allowGatewayTransit": false,
+                "useRemoteGateways": false,
+                "remoteAddressSpace": {
+                    "addressPrefixes": [
+                        "10.0.0.0/16"
+                    ]
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+            "apiVersion": "2020-11-01",
+            "name": "vNet-HBSS-DCC/peering-dcc-to-mgmt",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', 'vNet-HBSS-DCC')]",
+                "[resourceId('Microsoft.Network/virtualNetworks', 'vNet-HBSS-MGMT')]",
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'vNet-HBSS-DCC', 'sn-hbss-dcc-reception')]"
+            ],
+            "properties": {
+                "peeringState": "Connected",
+                "remoteVirtualNetwork": {
+                    "id": "[resourceId('Microsoft.Network/virtualNetworks', 'vNet-HBSS-MGMT')]"
+                },
+                "allowVirtualNetworkAccess": true,
+                "allowForwardedTraffic": false,
+                "allowGatewayTransit": false,
+                "useRemoteGateways": false,
+                "remoteAddressSpace": {
+                    "addressPrefixes": [
+                        "10.254.0.0/16"
+                    ]
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+            "apiVersion": "2020-11-01",
+            "name": "vNet-HBSS-MGMT/peering-mgmt-to-site01",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', 'vNet-HBSS-MGMT')]",
+                "[resourceId('Microsoft.Network/virtualNetworks', 'vNet-HBSS-SITE01')]",
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'vNet-HBSS-DCC', 'sn-hbss-dcc-reception')]",
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'vNet-HBSS-SITE01', 'sn-hbss-site01-core')]"
+            ],
+            "properties": {
+                "peeringState": "Connected",
+                "remoteVirtualNetwork": {
+                    "id": "[resourceId('Microsoft.Network/virtualNetworks', 'vNet-HBSS-SITE01')]"
+                },
+                "allowVirtualNetworkAccess": true,
+                "allowForwardedTraffic": false,
+                "allowGatewayTransit": false,
+                "useRemoteGateways": false,
+                "remoteAddressSpace": {
+                    "addressPrefixes": [
+                        "10.1.0.0/16"
+                    ]
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+            "apiVersion": "2020-11-01",
+            "name": "vNet-HBSS-SITE01/peering-site01-to-mgmt",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', 'vNet-HBSS-SITE01')]",
+                "[resourceId('Microsoft.Network/virtualNetworks', 'vNet-HBSS-MGMT')]",
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'vNet-HBSS-DCC', 'sn-hbss-dcc-reception')]",
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'vNet-HBSS-SITE01', 'sn-hbss-site01-core')]"
+            ],
+            "properties": {
+                "peeringState": "Connected",
+                "remoteVirtualNetwork": {
+                    "id": "[resourceId('Microsoft.Network/virtualNetworks', 'vNet-HBSS-MGMT')]"
+                },
+                "allowVirtualNetworkAccess": true,
+                "allowForwardedTraffic": false,
+                "allowGatewayTransit": false,
+                "useRemoteGateways": false,
+                "remoteAddressSpace": {
+                    "addressPrefixes": [
+                        "10.254.0.0/16"
+                    ]
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+            "apiVersion": "2020-11-01",
+            "name": "vNet-HBSS-MGMT/peering-mgmt-to-site-02",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', 'vNet-HBSS-MGMT')]",
+                "[resourceId('Microsoft.Network/virtualNetworks', 'vNet-HBSS-SITE02')]",
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'vNet-HBSS-DCC', 'sn-hbss-dcc-reception')]",
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'vNet-HBSS-SITE02', 'sn-hbss-site02-core')]"
+            ],
+            "properties": {
+                "peeringState": "Connected",
+                "remoteVirtualNetwork": {
+                    "id": "[resourceId('Microsoft.Network/virtualNetworks', 'vNet-HBSS-SITE02')]"
+                },
+                "allowVirtualNetworkAccess": true,
+                "allowForwardedTraffic": false,
+                "allowGatewayTransit": false,
+                "useRemoteGateways": false,
+                "remoteAddressSpace": {
+                    "addressPrefixes": [
+                        "10.2.0.0/16"
+                    ]
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+            "apiVersion": "2020-11-01",
+            "name": "vNet-HBSS-SITE02/peering-site02-to-mgmt",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', 'vNet-HBSS-SITE02')]",
+                "[resourceId('Microsoft.Network/virtualNetworks', 'vNet-HBSS-MGMT')]",
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'vNet-HBSS-DCC', 'sn-hbss-dcc-reception')]",
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'vNet-HBSS-SITE02', 'sn-hbss-site02-core')]"
+            ],
+            "properties": {
+                "peeringState": "Connected",
+                "remoteVirtualNetwork": {
+                    "id": "[resourceId('Microsoft.Network/virtualNetworks', 'vNet-HBSS-MGMT')]"
+                },
+                "allowVirtualNetworkAccess": true,
+                "allowForwardedTraffic": false,
+                "allowGatewayTransit": false,
+                "useRemoteGateways": false,
+                "remoteAddressSpace": {
+                    "addressPrefixes": [
+                        "10.254.0.0/16"
+                    ]
+                }
+            }
+        }
+       
+    ]
+}
