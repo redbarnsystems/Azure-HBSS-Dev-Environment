@@ -35,9 +35,25 @@
         {
             "type": "Microsoft.Network/virtualNetworks/subnets",
             "apiVersion": "2020-11-01",
+            "name": "vNet-HBSS-MGMT/sn-hbss-mgmt-core",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', 'vNet-HBSS-MGMT')]",
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'vNet-HBSS-MGMT', 'AzureBastionSubnet')]"
+            ],
+            "properties": {
+                "addressPrefix": "10.254.1.0/24",
+                "delegations": [],
+                "privateEndpointNetworkPolicies": "Enabled",
+                "privateLinkServiceNetworkPolicies": "Enabled"
+            }
+        },
+        {
+            "type": "Microsoft.Network/virtualNetworks/subnets",
+            "apiVersion": "2020-11-01",
             "name": "vNet-HBSS-MGMT/GatewaySubnet",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualNetworks', 'vNet-HBSS-MGMT')]"
+                "[resourceId('Microsoft.Network/virtualNetworks', 'vNet-HBSS-MGMT')]",
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'vNet-HBSS-MGMT', 'sn-hbss-mgmt-core')]"
             ],
             "properties": {
                 "addressPrefix": "10.254.0.0/24",
@@ -45,6 +61,54 @@
                 "delegations": [],
                 "privateEndpointNetworkPolicies": "Enabled",
                 "privateLinkServiceNetworkPolicies": "Enabled"
+            }
+        },
+        {
+            "type": "Microsoft.Network/publicIPAddresses",
+            "apiVersion": "2020-11-01",
+            "name": "ip-bastion-hbss-mgmt",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'vNet-HBSS-MGMT', 'AzureBastionSubnet')]"
+            ],
+            "location": "uksouth",
+            "sku": {
+                "name": "Standard",
+                "tier": "Regional"
+            },
+            "properties": {
+                "publicIPAddressVersion": "IPv4",
+                "publicIPAllocationMethod": "Static",
+                "idleTimeoutInMinutes": 4,
+                "ipTags": []
+            }
+        },
+        {
+            "type": "Microsoft.Network/bastionHosts",
+            "apiVersion": "2020-11-01",
+            "name": "bastion-hbss-mgmt",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/publicIPAddresses', 'ip-bastion-hbss-mgmt')]"
+            ],
+            "location": "uksouth",
+            "sku": {
+                "name": "Basic"
+            },
+            "properties": {
+                "dnsName": "bst-d49695fb-3a2d-4756-9b17-fa67f95e35e8.bastion.azure.com",
+                "ipConfigurations": [
+                    {
+                        "name": "IpConf",
+                        "properties": {
+                            "privateIPAllocationMethod": "Dynamic",
+                            "publicIPAddress": {
+                                "id": "[concat(resourceGroup().id,'/providers/Microsoft.Network/publicIPAddresses/ip-bastion-hbss-mgmt')]"
+                            },
+                            "subnet": {
+                                "id": "[concat(resourceGroup().id,'/providers/Microsoft.Network/virtualNetworks/vNet-HBSS-MGMT/subnets/AzureBastionSubnet')]"
+                            }
+                        }
+                    }
+                ]
             }
         },
 
