@@ -1,0 +1,28 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "DefaultAdminUserName": {
+            "type": "string",
+            "defaultValue": "Pr351d3nt",
+            "metadata": {
+                "description": "The default administrator username for Windows/Linux machines created in this deployment.  This cannot be 'Administrator' or 'root'"
+            }
+        },
+        "DefaultAdminPassword": {
+            "type": "string",
+            "defaultValue": "Password123!",
+            "metadata": {
+                "description": "The location of the deployment"
+            }
+        }
+    },
+    "variables": {
+        "network-template": "https://raw.githubusercontent.com/redbarnsystems/Azure-HBSS-Dev-Environment/master/ARM%20Templates/HBSS-Networking.json",
+        "nsg-template": "https://raw.githubusercontent.com/redbarnsystems/Azure-HBSS-Dev-Environment/master/ARM%20Templates/HBSS-NSG.json",
+        "centos7-template": "https://raw.githubusercontent.com/neilpeterson/arm-deployment-demo/master/linked-tempate/artifacts/identity.json",
+        "w2K19-template": "https://raw.githubusercontent.com/neilpeterson/arm-deployment-demo/master/linked-tempate/artifacts/identity.json"
+    },
+    "resources": [],
+    "outputs": {}
+} 
