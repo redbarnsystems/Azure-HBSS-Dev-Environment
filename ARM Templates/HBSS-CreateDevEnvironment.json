@@ -22,28 +22,91 @@
         }
     },
     "variables": {
-        "networking-deployments-template": "https://raw.githubusercontent.com/redbarnsystems/Azure-HBSS-Dev-Environment/master/ARM%20Templates/HBSS-W2K19.json",
-        "nsg-deployments-template": "https://raw.githubusercontent.com/redbarnsystems/Azure-HBSS-Dev-Environment/master/ARM%20Templates/HBSS-W2K19.json",
-        "centos-deployments-template": "https://raw.githubusercontent.com/redbarnsystems/Azure-HBSS-Dev-Environment/master/ARM%20Templates/HBSS-W2K19.json",
-        "w2k19-deployments-template": "https://raw.githubusercontent.com/redbarnsystems/Azure-HBSS-Dev-Environment/master/ARM%20Templates/HBSS-W2K19.json"
+        "networking-deployments-template": "https://raw.githubusercontent.com/redbarnsystems/Azure-HBSS-Dev-Environment/master/ARM%20Templates/HBSS-Networking.json",
+        "ragateway-deployments-template": "https://raw.githubusercontent.com/redbarnsystems/Azure-HBSS-Dev-Environment/master/ARM%20Templates/HBSS-RAGateway.json",
+        "nsg-deployments-template": "https://raw.githubusercontent.com/redbarnsystems/Azure-HBSS-Dev-Environment/master/ARM%20Templates/HBSS-NSG.json",
+        "centos-deployments-template": "https://raw.githubusercontent.com/redbarnsystems/Azure-HBSS-Dev-Environment/master/ARM%20Templates/HBSS-CentOS-VMs.json",
+        "w2k19-deployments-template": "https://raw.githubusercontent.com/redbarnsystems/Azure-HBSS-Dev-Environment/master/ARM%20Templates/HBSS-W2K19-VMs.json"
     },
     "resources": [
         {
-            "name": "dc01",
+            "name": "Networking",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2019-10-01",
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[variables('w2k19-template')]",
+                    "uri": "[variables('networking-deployments-template')]",
+                    "contentVersion": "1.0.0.0"
+                }
+            }
+        },
+        {
+            "name": "NSGs",
+            "dependsOn": [
+                "[resourceId('Microsoft.Resources/deployments', 'networking')]"
+            ],
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2019-10-01",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[variables('nsg-deployments-template')]",
+                    "contentVersion": "1.0.0.0"
+                }
+            }
+        },
+        {
+            "name": "RemoteAccessGateway",
+            "dependsOn": [
+                "[resourceId('Microsoft.Resources/deployments', 'networking')]"
+            ],
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2019-10-01",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[variables('ragateway-deployments-template')]",
+                    "contentVersion": "1.0.0.0"
+                }
+            }
+        },
+        {
+            "name": "CentOS-VMs",
+            "dependsOn": [
+                "[resourceId('Microsoft.Resources/deployments', 'networking')]"
+            ],
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2019-10-01",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[variables('centos-deployments-template')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
-                    "name": { "value": "dc01" },
                     "DefaultAdminUserName": { "value": "[parameters('DefaultAdminUserName')]" },
                     "DefaultAdminPassword": { "value": "[parameters('DefaultAdminPassword')]" },
-                    "vNet": { "value": "vNet-HBSS-DCC" },
-                    "Subnet": { "value": "sn-hbss-dcc-application" },
+                    "location": { "value": "[parameters('location')]" }
+                }
+            }
+        },
+        {
+            "name": "W2K19-VMs",
+            "dependsOn": [
+                "[resourceId('Microsoft.Resources/deployments', 'networking')]"
+            ],
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2019-10-01",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[variables('w2k19-deployments-template')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "DefaultAdminUserName": { "value": "[parameters('DefaultAdminUserName')]" },
+                    "DefaultAdminPassword": { "value": "[parameters('DefaultAdminPassword')]" },
                     "location": { "value": "[parameters('location')]" }
                 }
             }

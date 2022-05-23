@@ -4,7 +4,7 @@
     "parameters": {
         "name": {
             "type": "string",
-            "defaultValue": "centos7",
+            "defaultValue": "ragateway.mgmt.hbss.local",
             "metadata": {
                 "description": "The name of the virtual machine"
             }
@@ -13,15 +13,37 @@
             "type": "string",
             "defaultValue": "Pr351d3nt",
             "metadata": {
-                "description": "The default administrator username for Windows/Linux machines created in this deployment.  This cannot be 'Administrator' or 'root'"
+                "description": "The default administrator's username for Windows/Linux machines created in this deployment.  This cannot be 'Administrator' or 'root'"
             }
         },
         "DefaultAdminPassword": {
-            "type": "string",
+            "type": "secureString",
             "defaultValue": "Password123!",
             "metadata": {
-                "description": "The location of the deployment"
+                "description": "The default administrator's password."
             }
+        },
+        "vNet": {
+            "type": "string",
+            "defaultValue": "vNet-HBSS-MGMT",
+            "metadata": {
+                "description": "The parent virtual network the VM will be deployed to."
+            }
+        },
+        "Subnet": {
+            "type": "string",
+            "defaultValue": "sn-hbss-mgmt-core",
+            "metadata": {
+                "description": "The subnet within the parent vNet to deploy the VM to."
+            }
+        },
+        "location": {
+            "type": "string",
+            "defaultValue": "UK South"
+        },
+        "vm-size": {
+            "type": "string",
+            "defaultValue": "Standard_D2as_v4"
         }
     },
     "variables": {},
@@ -29,10 +51,10 @@
         {
             "type": "Microsoft.Network/networkSecurityGroups",
             "apiVersion": "2020-11-01",
-            "name": "nsg-hbss-mgmt-ragateway",
-            "location": "uksouth",
+            "name": "[concat('nsg-',parameters('name'))]",
+            "location": "[parameters('location')]",
             "tags": {
-                "resource": "vm-hbss-mgmt-rag"
+                "resource": "[parameters('name')]"
             },
             "properties": {
                 "securityRules": [
@@ -76,10 +98,10 @@
         {
             "type": "Microsoft.Network/publicIPAddresses",
             "apiVersion": "2020-11-01",
-            "name": "vm-hbss-mgmt-rag-ip",
-            "location": "uksouth",
+            "name": "[concat('ip-',parameters('name'))]",
+            "location": "[parameters('location')]",
             "tags": {
-                "resource": "vm-hbss-mgmt-rag"
+                "resource": "[parameters('name')]"
             },
             "sku": {
                 "name": "Basic",
@@ -95,17 +117,17 @@
         {
             "type": "Microsoft.Compute/virtualMachines",
             "apiVersion": "2021-11-01",
-            "name": "vm-hbss-mgmt-rag",
-            "location": "uksouth",
+            "name": "[parameters('name')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/networkInterfaces', 'vm-hbss-mgmt-rag')]"
+                "[resourceId('Microsoft.Network/networkInterfaces', concat('nic-',parameters('name')))]"
             ],
+            "location": "uksouth",
             "tags": {
-                "resource": "vm-hbss-mgmt-rag"
+                "resource": "[parameters('name')]"
             },
             "properties": {
                 "hardwareProfile": {
-                    "vmSize": "Standard_D2as_v4"
+                    "vmSize": "[parameters('vm-size')]"
                 },
                 "storageProfile": {
                     "imageReference": {
@@ -116,7 +138,7 @@
                     },
                     "osDisk": {
                         "osType": "Linux",
-                        "name": "vm-hbss-mgmt-rag_OsDisk_1",
+                        "name": "[concat('disk1-',parameters('name'))]",
                         "createOption": "FromImage",
                         "caching": "ReadWrite",
                         "managedDisk": {
@@ -128,9 +150,9 @@
                     "dataDisks": []
                 },
                 "osProfile": {
-                    "computerName": "vm-hbss-mgmt-rag",
-                    "adminUsername": "Pr351d3nt",
-                    "adminPassword": "Password123!",
+                    "computerName": "[parameters('name')]",
+                    "adminUsername": "[parameters('DefaultAdminUserName')]",
+                    "adminPassword": "[parameters('DefaultAdminPassword')]",
                     "linuxConfiguration": {
                         "disablePasswordAuthentication": false,
                         "provisionVMAgent": true,
@@ -145,7 +167,7 @@
                 "networkProfile": {
                     "networkInterfaces": [
                         {
-                            "id": "[resourceId('Microsoft.Network/networkInterfaces', 'vm-hbss-mgmt-rag')]",
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', concat('nic-',parameters('name')))]",
                             "properties": {
                                 "deleteOption": "Delete"
                             }
@@ -162,14 +184,13 @@
         {
             "type": "Microsoft.Network/networkInterfaces",
             "apiVersion": "2020-11-01",
-            "name": "vm-hbss-mgmt-rag",
+            "name": "[concat('nic-',parameters('name'))]",
             "location": "uksouth",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/publicIPAddresses', 'vm-hbss-mgmt-rag-ip')]",
-                "[resourceId('Microsoft.Network/networkSecurityGroups', 'nsg-hbss-mgmt-ragateway')]"
+                "[resourceId('Microsoft.Network/publicIPAddresses', concat('ip-',parameters('name')))]"
             ],
             "tags": {
-                "resource": "vm-hbss-mgmt-rag"
+                "resource": "[concat('ip-',parameters('name'))]"
             },
             "properties": {
                 "ipConfigurations": [
@@ -178,10 +199,10 @@
                         "properties": {
                             "privateIPAllocationMethod": "Dynamic",
                             "publicIPAddress": {
-                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', 'vm-hbss-mgmt-rag-ip')]"
+                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', concat('ip-',parameters('name')))]"
                             },
                             "subnet": {
-                                "id": "[concat(resourceGroup().id,'/providers/Microsoft.Network/virtualNetworks/vNet-HBSS-mgmt/subnets/sn-hbss-mgmt-core')]"
+                                "id": "[concat(resourceGroup().id,'/providers/Microsoft.Network/virtualNetworks/', parameters('vNet'), '/subnets/', parameters('Subnet'))]"
                             },
                             "primary": true,
                             "privateIPAddressVersion": "IPv4"
@@ -194,7 +215,7 @@
                 "enableAcceleratedNetworking": true,
                 "enableIPForwarding": false,
                 "networkSecurityGroup": {
-                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', 'nsg-hbss-mgmt-ragateway')]"
+                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', concat('nsg-', parameters('name')))]"
                 }
             }
         }
