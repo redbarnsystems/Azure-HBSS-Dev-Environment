@@ -1,506 +1,129 @@
 {
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
-    "parameters": {},
+    "parameters": {
+        "DefaultAdminUserName": {
+            "type": "string",
+            "defaultValue": "Pr351d3nt",
+            "metadata": {
+                "description": "The default administrator's username for Windows/Linux machines created in this deployment.  This cannot be 'Administrator' or 'root'"
+            }
+        },
+        "DefaultAdminPassword": {
+            "type": "secureString",
+            "defaultValue": "Password123!",
+            "metadata": {
+                "description": "The default administrator's password."
+            }
+        },
+        "location": {
+            "type": "string",
+            "defaultValue": "UK South"
+        }
+    },
     "variables": {
-        "centos-template": "https://raw.githubusercontent.com/neilpeterson/arm-deployment-demo/master/linked-tempate/artifacts/storage.json"
+        "centos-template": "https://raw.githubusercontent.com/redbarnsystems/Azure-HBSS-Dev-Environment/master/ARM%20Templates/HBSS-CentOS7.json"
     },
     "resources": [
         {
-            "type": "Microsoft.Compute/virtualMachines",
-            "apiVersion": "2021-11-01",
-            "name": "vm-hbss-dcc-cent01",
-            "location": "uksouth",
-            "dependsOn": [
-                "[resourceId('Microsoft.Network/networkInterfaces', 'vm-hbss-dcc-cent01')]"
-            ],
-            "tags": {
-                "resource": "vm-hbss-dcc-cent01"
-            },
+            "name": "cent01.dcc.hbss.local",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2019-10-01",
             "properties": {
-                "hardwareProfile": {
-                    "vmSize": "Standard_D2as_v4"
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[variables('centos-template')]",
+                    "contentVersion": "1.0.0.0"
                 },
-                "storageProfile": {
-                    "imageReference": {
-                        "publisher": "OpenLogic",
-                        "offer": "CentOS",
-                        "sku": "7_9-gen2",
-                        "version": "latest"
-                    },
-                    "osDisk": {
-                        "osType": "Linux",
-                        "name": "vm-hbss-dcc-cent01_OsDisk_1",
-                        "createOption": "FromImage",
-                        "caching": "ReadWrite",
-                        "managedDisk": {
-                            "storageAccountType": "Standard_LRS"
-                        },
-                        "deleteOption": "Delete",
-                        "diskSizeGB": 30
-                    },
-                    "dataDisks": []
-                },
-                "osProfile": {
-                    "computerName": "vm-hbss-dcc-cent01",
-                    "adminUsername": "Pr351d3nt",
-                    "adminPassword": "Password123!",
-                    "linuxConfiguration": {
-                        "disablePasswordAuthentication": false,
-                        "provisionVMAgent": true,
-                        "patchSettings": {
-                            "patchMode": "ImageDefault",
-                            "assessmentMode": "ImageDefault"
-                        }
-                    },
-                    "secrets": [],
-                    "allowExtensionOperations": true
-                },
-                "networkProfile": {
-                    "networkInterfaces": [
-                        {
-                            "id": "[resourceId('Microsoft.Network/networkInterfaces', 'vm-hbss-dcc-cent01')]",
-                            "properties": {
-                                "deleteOption": "Delete"
-                            }
-                        }
-                    ]
-                },
-                "diagnosticsProfile": {
-                    "bootDiagnostics": {
-                        "enabled": true
-                    }
-                }
-            }
-        },
-       
-        {
-            "type": "Microsoft.Network/networkInterfaces",
-            "apiVersion": "2020-11-01",
-            "name": "vm-hbss-dcc-cent01",
-            "location": "uksouth",
-            "tags": {
-                "resource": "vm-hbss-dcc-cent01"
-            },
-            "properties": {
-                "ipConfigurations": [
-                    {
-                        "name": "ipconfig1",
-                        "properties": {
-                            "privateIPAllocationMethod": "Dynamic",
-                            "subnet": {
-                                "id": "[concat(resourceGroup().id,'/providers/Microsoft.Network/virtualNetworks/vNet-HBSS-DCC/subnets/sn-hbss-dcc-application')]"
-                               },
-                            "primary": true,
-                            "privateIPAddressVersion": "IPv4"
-                        }
-                    }
-                ],
-                "dnsSettings": {
-                    "dnsServers": []
-                },
-                "enableAcceleratedNetworking": true,
-                "enableIPForwarding": false
-            }
-        },
-
-
-        {
-            "type": "Microsoft.Compute/virtualMachines",
-            "apiVersion": "2021-11-01",
-            "name": "vm-hbss-site01-cent01",
-            "location": "uksouth",
-            "dependsOn": [
-                "[resourceId('Microsoft.Network/networkInterfaces', 'vm-hbss-site01-cent01')]"
-            ],
-            "tags": {
-                "resource": "vm-hbss-site01-cent01"
-            },
-            "properties": {
-                "hardwareProfile": {
-                    "vmSize": "Standard_D2as_v4"
-                },
-                "storageProfile": {
-                    "imageReference": {
-                        "publisher": "OpenLogic",
-                        "offer": "CentOS",
-                        "sku": "7_9-gen2",
-                        "version": "latest"
-                    },
-                    "osDisk": {
-                        "osType": "Linux",
-                        "name": "vm-hbss-site01-cent01_OsDisk_1",
-                        "createOption": "FromImage",
-                        "caching": "ReadWrite",
-                        "managedDisk": {
-                            "storageAccountType": "Standard_LRS"
-                        },
-                        "deleteOption": "Delete",
-                        "diskSizeGB": 30
-                    },
-                    "dataDisks": []
-                },
-                "osProfile": {
-                    "computerName": "vm-hbss-site01-cent01",
-                    "adminUsername": "Pr351d3nt",
-                    "adminPassword": "Password123!",
-                    "linuxConfiguration": {
-                        "disablePasswordAuthentication": false,
-                        "provisionVMAgent": true,
-                        "patchSettings": {
-                            "patchMode": "ImageDefault",
-                            "assessmentMode": "ImageDefault"
-                        }
-                    },
-                    "secrets": [],
-                    "allowExtensionOperations": true
-                },
-                "networkProfile": {
-                    "networkInterfaces": [
-                        {
-                            "id": "[resourceId('Microsoft.Network/networkInterfaces', 'vm-hbss-site01-cent01')]",
-                            "properties": {
-                                "deleteOption": "Delete"
-                            }
-                        }
-                    ]
-                },
-                "diagnosticsProfile": {
-                    "bootDiagnostics": {
-                        "enabled": true
-                    }
+                "parameters": {
+                    "name": { "value": "cent01.dcc.hbss.local" },
+                    "DefaultAdminUserName": { "value": "[parameters('DefaultAdminUserName')]" },
+                    "DefaultAdminPassword": { "value": "[parameters('DefaultAdminPassword')]" },
+                    "vNet": { "value": "vNet-HBSS-DCC" },
+                    "Subnet": { "value": "sn-hbss-dcc-application" },
+                    "location": { "value": "[parameters('location')]" }
                 }
             }
         },
         {
-            "type": "Microsoft.Network/networkInterfaces",
-            "apiVersion": "2020-11-01",
-            "name": "vm-hbss-site01-cent01",
-            "location": "uksouth",
-            "tags": {
-                "resource": "vm-hbss-site01-cent01"
-            },
+            "name": "cent01.site01.hbss.local",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2019-10-01",
             "properties": {
-                "ipConfigurations": [
-                    {
-                        "name": "ipconfig1",
-                        "properties": {
-                            "privateIPAllocationMethod": "Dynamic",
-                            "subnet": {
-                                "id": "[concat(resourceGroup().id,'/providers/Microsoft.Network/virtualNetworks/vNet-HBSS-site01/subnets/sn-hbss-site01-core')]"
-                            },
-                            "primary": true,
-                            "privateIPAddressVersion": "IPv4"
-                        }
-                    }
-                ],
-                "dnsSettings": {
-                    "dnsServers": []
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[variables('centos-template')]",
+                    "contentVersion": "1.0.0.0"
                 },
-                "enableAcceleratedNetworking": true,
-                "enableIPForwarding": false
-            }
-        },
-
-
-        {
-            "type": "Microsoft.Compute/virtualMachines",
-            "apiVersion": "2021-11-01",
-            "name": "vm-hbss-site01-cent02",
-            "location": "uksouth",
-            "dependsOn": [
-                "[resourceId('Microsoft.Network/networkInterfaces', 'vm-hbss-site01-cent02')]"
-            ],
-            "tags": {
-                "resource": "vm-hbss-site01-cent02"
-            },
-            "properties": {
-                "hardwareProfile": {
-                    "vmSize": "Standard_D2as_v4"
-                },
-                "storageProfile": {
-                    "imageReference": {
-                        "publisher": "OpenLogic",
-                        "offer": "CentOS",
-                        "sku": "7_9-gen2",
-                        "version": "latest"
-                    },
-                    "osDisk": {
-                        "osType": "Linux",
-                        "name": "vm-hbss-site01-cent02_OsDisk_1",
-                        "createOption": "FromImage",
-                        "caching": "ReadWrite",
-                        "managedDisk": {
-                            "storageAccountType": "Standard_LRS"
-                        },
-                        "deleteOption": "Delete",
-                        "diskSizeGB": 30
-                    },
-                    "dataDisks": []
-                },
-                "osProfile": {
-                    "computerName": "vm-hbss-site01-cent02",
-                    "adminUsername": "Pr351d3nt",
-                    "adminPassword": "Password123!",
-                    "linuxConfiguration": {
-                        "disablePasswordAuthentication": false,
-                        "provisionVMAgent": true,
-                        "patchSettings": {
-                            "patchMode": "ImageDefault",
-                            "assessmentMode": "ImageDefault"
-                        }
-                    },
-                    "secrets": [],
-                    "allowExtensionOperations": true
-                },
-                "networkProfile": {
-                    "networkInterfaces": [
-                        {
-                            "id": "[resourceId('Microsoft.Network/networkInterfaces', 'vm-hbss-site01-cent02')]",
-                            "properties": {
-                                "deleteOption": "Delete"
-                            }
-                        }
-                    ]
-                },
-                "diagnosticsProfile": {
-                    "bootDiagnostics": {
-                        "enabled": true
-                    }
+                "parameters": {
+                    "name": { "value": "cent01.site01.hbss.local" },
+                    "DefaultAdminUserName": { "value": "[parameters('DefaultAdminUserName')]" },
+                    "DefaultAdminPassword": { "value": "[parameters('DefaultAdminPassword')]" },
+                    "vNet": { "value": "vNet-HBSS-SITE01" },
+                    "Subnet": { "value": "sn-hbss-site01-core" },
+                    "location": { "value": "[parameters('location')]" }
                 }
             }
         },
         {
-            "type": "Microsoft.Network/networkInterfaces",
-            "apiVersion": "2020-11-01",
-            "name": "vm-hbss-site01-cent02",
-            "location": "uksouth",
-            "tags": {
-                "resource": "vm-hbss-site01-cent02"
-            },
+            "name": "cent02.site01.hbss.local",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2019-10-01",
             "properties": {
-                "ipConfigurations": [
-                    {
-                        "name": "ipconfig1",
-                        "properties": {
-                            "privateIPAllocationMethod": "Dynamic",
-                            "subnet": {
-                                "id": "[concat(resourceGroup().id,'/providers/Microsoft.Network/virtualNetworks/vNet-HBSS-site01/subnets/sn-hbss-site01-dmz')]"
-                            },
-                            "primary": true,
-                            "privateIPAddressVersion": "IPv4"
-                        }
-                    }
-                ],
-                "dnsSettings": {
-                    "dnsServers": []
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[variables('centos-template')]",
+                    "contentVersion": "1.0.0.0"
                 },
-                "enableAcceleratedNetworking": true,
-                "enableIPForwarding": false
-            }
-        },
-
-
-        {
-            "type": "Microsoft.Compute/virtualMachines",
-            "apiVersion": "2021-11-01",
-            "name": "vm-hbss-site02-cent01",
-            "location": "uksouth",
-            "dependsOn": [
-                "[resourceId('Microsoft.Network/networkInterfaces', 'vm-hbss-site02-cent01')]"
-            ],
-            "tags": {
-                "resource": "vm-hbss-site02-cent01"
-            },
-            "properties": {
-                "hardwareProfile": {
-                    "vmSize": "Standard_D2as_v4"
-                },
-                "storageProfile": {
-                    "imageReference": {
-                        "publisher": "OpenLogic",
-                        "offer": "CentOS",
-                        "sku": "7_9-gen2",
-                        "version": "latest"
-                    },
-                    "osDisk": {
-                        "osType": "Linux",
-                        "name": "vm-hbss-site02-cent01_OsDisk_1",
-                        "createOption": "FromImage",
-                        "caching": "ReadWrite",
-                        "managedDisk": {
-                            "storageAccountType": "Standard_LRS"
-                        },
-                        "deleteOption": "Delete",
-                        "diskSizeGB": 30
-                    },
-                    "dataDisks": []
-                },
-                "osProfile": {
-                    "computerName": "vm-hbss-site02-cent01",
-                    "adminUsername": "Pr351d3nt",
-                    "adminPassword": "Password123!",
-                    "linuxConfiguration": {
-                        "disablePasswordAuthentication": false,
-                        "provisionVMAgent": true,
-                        "patchSettings": {
-                            "patchMode": "ImageDefault",
-                            "assessmentMode": "ImageDefault"
-                        }
-                    },
-                    "secrets": [],
-                    "allowExtensionOperations": true
-                },
-                "networkProfile": {
-                    "networkInterfaces": [
-                        {
-                            "id": "[resourceId('Microsoft.Network/networkInterfaces', 'vm-hbss-site02-cent01')]",
-                            "properties": {
-                                "deleteOption": "Delete"
-                            }
-                        }
-                    ]
-                },
-                "diagnosticsProfile": {
-                    "bootDiagnostics": {
-                        "enabled": true
-                    }
+                "parameters": {
+                    "name": { "value": "cent02.site01.hbss.local" },
+                    "DefaultAdminUserName": { "value": "[parameters('DefaultAdminUserName')]" },
+                    "DefaultAdminPassword": { "value": "[parameters('DefaultAdminPassword')]" },
+                    "vNet": { "value": "vNet-HBSS-SITE01" },
+                    "Subnet": { "value": "sn-hbss-site01-dmz" },
+                    "location": { "value": "[parameters('location')]" }
                 }
             }
         },
         {
-            "type": "Microsoft.Network/networkInterfaces",
-            "apiVersion": "2020-11-01",
-            "name": "vm-hbss-site02-cent01",
-            "location": "uksouth",
-            "tags": {
-                "resource": "vm-hbss-site02-cent01"
-            },
+            "name": "cent01.site02.hbss.local",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2019-10-01",
             "properties": {
-                "ipConfigurations": [
-                    {
-                        "name": "ipconfig1",
-                        "properties": {
-                            "privateIPAllocationMethod": "Dynamic",
-                            "subnet": {
-                                "id": "[concat(resourceGroup().id,'/providers/Microsoft.Network/virtualNetworks/vNet-HBSS-site02/subnets/sn-hbss-site02-core')]"
-                            },
-                            "primary": true,
-                            "privateIPAddressVersion": "IPv4"
-                        }
-                    }
-                ],
-                "dnsSettings": {
-                    "dnsServers": []
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[variables('centos-template')]",
+                    "contentVersion": "1.0.0.0"
                 },
-                "enableAcceleratedNetworking": true,
-                "enableIPForwarding": false
-            }
-        },
-
-
-
-
-
-
-
-        {
-            "type": "Microsoft.Compute/virtualMachines",
-            "apiVersion": "2021-11-01",
-            "name": "vm-hbss-dcc-nifi01",
-            "location": "uksouth",
-            "dependsOn": [
-                "[resourceId('Microsoft.Network/networkInterfaces', 'vm-hbss-dcc-nifi01')]"
-            ],
-            "tags": {
-                "resource": "vm-hbss-dcc-nifi01"
-            },
-            "properties": {
-                "hardwareProfile": {
-                    "vmSize": "Standard_D2"
-                },
-                "storageProfile": {
-                    "imageReference": {
-                        "publisher": "OpenLogic",
-                        "offer": "CentOS",
-                        "sku": "7_9-gen2",
-                        "version": "latest"
-                    },
-                    "osDisk": {
-                        "osType": "Linux",
-                        "name": "vm-hbss-dcc-nifi01_OsDisk_1",
-                        "createOption": "FromImage",
-                        "caching": "ReadWrite",
-                        "managedDisk": {
-                            "storageAccountType": "Standard_LRS"
-                        },
-                        "deleteOption": "Delete",
-                        "diskSizeGB": 30
-                    },
-                    "dataDisks": []
-                },
-                "osProfile": {
-                    "computerName": "vm-hbss-dcc-nifi01",
-                    "adminUsername": "Pr351d3nt",
-                    "adminPassword": "Password123!",
-                    "linuxConfiguration": {
-                        "disablePasswordAuthentication": false,
-                        "provisionVMAgent": true,
-                        "patchSettings": {
-                            "patchMode": "ImageDefault",
-                            "assessmentMode": "ImageDefault"
-                        }
-                    },
-                    "secrets": [],
-                    "allowExtensionOperations": true
-                },
-                "networkProfile": {
-                    "networkInterfaces": [
-                        {
-                            "id": "[resourceId('Microsoft.Network/networkInterfaces', 'vm-hbss-dcc-nifi01')]",
-                            "properties": {
-                                "deleteOption": "Delete"
-                            }
-                        }
-                    ]
-                },
-                "diagnosticsProfile": {
-                    "bootDiagnostics": {
-                        "enabled": true
-                    }
+                "parameters": {
+                    "name": { "value": "cent01.site02.hbss.local" },
+                    "DefaultAdminUserName": { "value": "[parameters('DefaultAdminUserName')]" },
+                    "DefaultAdminPassword": { "value": "[parameters('DefaultAdminPassword')]" },
+                    "vNet": { "value": "vNet-HBSS-SITE02" },
+                    "Subnet": { "value": "sn-hbss-site02-core" },
+                    "location": { "value": "[parameters('location')]" }
                 }
             }
         },
-       
         {
-            "type": "Microsoft.Network/networkInterfaces",
-            "apiVersion": "2020-11-01",
-            "name": "vm-hbss-dcc-nifi01",
-            "location": "uksouth",
-            "tags": {
-                "resource": "vm-hbss-dcc-nifi01"
-            },
+            "name": "nifi01.dcc.hbss.local",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2019-10-01",
             "properties": {
-                "ipConfigurations": [
-                    {
-                        "name": "ipconfig1",
-                        "properties": {
-                            "privateIPAllocationMethod": "Dynamic",
-                            "subnet": {
-                                "id": "[concat(resourceGroup().id,'/providers/Microsoft.Network/virtualNetworks/vNet-HBSS-DCC/subnets/sn-hbss-dcc-core')]"
-                               },
-                            "primary": true,
-                            "privateIPAddressVersion": "IPv4"
-                        }
-                    }
-                ],
-                "dnsSettings": {
-                    "dnsServers": []
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[variables('centos-template')]",
+                    "contentVersion": "1.0.0.0"
                 },
-                "enableAcceleratedNetworking": true,
-                "enableIPForwarding": false
+                "parameters": {
+                    "name": { "value": "nifi01.dcc.hbss.local" },
+                    "DefaultAdminUserName": { "value": "[parameters('DefaultAdminUserName')]" },
+                    "DefaultAdminPassword": { "value": "[parameters('DefaultAdminPassword')]" },
+                    "vNet": { "value": "vNet-HBSS-DCC" },
+                    "Subnet": { "value": "sn-hbss-dcc-core" },
+                    "location": { "value": "[parameters('location')]" }
+                }
             }
         }
-
     ]
 }

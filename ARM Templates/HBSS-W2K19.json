@@ -10,14 +10,14 @@
             }
         },
         "DefaultAdminUserName": {
-            "type": "secureString",
+            "type": "string",
             "defaultValue": "Pr351d3nt",
             "metadata": {
                 "description": "The default administrator's username for Windows/Linux machines created in this deployment.  This cannot be 'Administrator' or 'root'"
             }
         },
         "DefaultAdminPassword": {
-            "type": "string",
+            "type": "secureString",
             "defaultValue": "Password123!",
             "metadata": {
                 "description": "The default administrator's password."

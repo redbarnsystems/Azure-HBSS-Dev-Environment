@@ -1,28 +1,52 @@
 {
-    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
         "DefaultAdminUserName": {
             "type": "string",
             "defaultValue": "Pr351d3nt",
             "metadata": {
-                "description": "The default administrator username for Windows/Linux machines created in this deployment.  This cannot be 'Administrator' or 'root'"
+                "description": "The default administrator's username for Windows/Linux machines created in this deployment.  This cannot be 'Administrator' or 'root'"
             }
         },
         "DefaultAdminPassword": {
-            "type": "string",
+            "type": "secureString",
             "defaultValue": "Password123!",
             "metadata": {
-                "description": "The location of the deployment"
+                "description": "The default administrator's password."
             }
+        },
+        "location": {
+            "type": "string",
+            "defaultValue": "UK South"
         }
     },
     "variables": {
-        "network-template": "https://raw.githubusercontent.com/redbarnsystems/Azure-HBSS-Dev-Environment/master/ARM%20Templates/HBSS-Networking.json",
-        "nsg-template": "https://raw.githubusercontent.com/redbarnsystems/Azure-HBSS-Dev-Environment/master/ARM%20Templates/HBSS-NSG.json",
-        "centos7-template": "https://raw.githubusercontent.com/neilpeterson/arm-deployment-demo/master/linked-tempate/artifacts/identity.json",
-        "w2K19-template": "https://raw.githubusercontent.com/neilpeterson/arm-deployment-demo/master/linked-tempate/artifacts/identity.json"
+        "networking-deployments-template": "https://raw.githubusercontent.com/redbarnsystems/Azure-HBSS-Dev-Environment/master/ARM%20Templates/HBSS-W2K19.json",
+        "nsg-deployments-template": "https://raw.githubusercontent.com/redbarnsystems/Azure-HBSS-Dev-Environment/master/ARM%20Templates/HBSS-W2K19.json",
+        "centos-deployments-template": "https://raw.githubusercontent.com/redbarnsystems/Azure-HBSS-Dev-Environment/master/ARM%20Templates/HBSS-W2K19.json",
+        "w2k19-deployments-template": "https://raw.githubusercontent.com/redbarnsystems/Azure-HBSS-Dev-Environment/master/ARM%20Templates/HBSS-W2K19.json"
     },
-    "resources": [],
-    "outputs": {}
-} 
+    "resources": [
+        {
+            "name": "dc01",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2019-10-01",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[variables('w2k19-template')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "name": { "value": "dc01" },
+                    "DefaultAdminUserName": { "value": "[parameters('DefaultAdminUserName')]" },
+                    "DefaultAdminPassword": { "value": "[parameters('DefaultAdminPassword')]" },
+                    "vNet": { "value": "vNet-HBSS-DCC" },
+                    "Subnet": { "value": "sn-hbss-dcc-application" },
+                    "location": { "value": "[parameters('location')]" }
+                }
+            }
+        }
+    ]
+}
