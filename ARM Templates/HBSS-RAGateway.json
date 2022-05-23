@@ -190,7 +190,7 @@
                 "[resourceId('Microsoft.Network/publicIPAddresses', concat('ip-',parameters('name')))]"
             ],
             "tags": {
-                "resource": "[concat('ip-',parameters('name'))]"
+                "resource": "[parameters('name')]"
             },
             "properties": {
                 "ipConfigurations": [

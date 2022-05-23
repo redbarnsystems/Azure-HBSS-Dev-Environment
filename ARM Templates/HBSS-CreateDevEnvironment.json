@@ -72,26 +72,6 @@
             }
         },
         {
-            "name": "CentOS-VMs",
-            "dependsOn": [
-                "[resourceId('Microsoft.Resources/deployments', 'networking')]"
-            ],
-            "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2019-10-01",
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[variables('centos-deployments-template')]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "DefaultAdminUserName": { "value": "[parameters('DefaultAdminUserName')]" },
-                    "DefaultAdminPassword": { "value": "[parameters('DefaultAdminPassword')]" },
-                    "location": { "value": "[parameters('location')]" }
-                }
-            }
-        },
-        {
             "name": "W2K19-VMs",
             "dependsOn": [
                 "[resourceId('Microsoft.Resources/deployments', 'networking')]"
