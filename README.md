@@ -18,7 +18,7 @@ Individual virtual machines do not by default have any Network Security Groups (
 
 Please see the overview diagram below.
 
-![HBSS Dev Environment Architecture](images/HBSS-Networking.png)
+![HBSS Dev Environment Architecture](Images/HBSS-Networking.png)
 
 Management of the environment is initially performed via a web portal running on the ragateway.mgmt.hbss.local virtual machine. This is the only virtual machine in the environment with wider internet access and consequently the only virtual machine with its own NSG limiting traffic from the wider internet to ssl web encrypted traffic on port 8443.  If further lock down is required, access to the VM can be additionally restricted using Azure Just in Time (JIT) access meaning all traffic is blocked until specific ports are opened to individual IPs as required.
 
