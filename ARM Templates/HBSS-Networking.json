@@ -82,24 +82,9 @@
         {
             "type": "Microsoft.Network/virtualNetworks/subnets",
             "apiVersion": "2020-11-01",
-            "name": "vNet-HBSS-DCC/sn-hbss-dcc-application",
-            "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualNetworks', 'vNet-HBSS-DCC')]"
-            ],
-            "properties": {
-                "addressPrefix": "10.0.3.0/24",
-                "delegations": [],
-                "privateEndpointNetworkPolicies": "Enabled",
-                "privateLinkServiceNetworkPolicies": "Enabled"
-            }
-        },
-        {
-            "type": "Microsoft.Network/virtualNetworks/subnets",
-            "apiVersion": "2020-11-01",
             "name": "vNet-HBSS-DCC/sn-hbss-dcc-core",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualNetworks', 'vNet-HBSS-DCC')]",
-                "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'vNet-HBSS-DCC', 'sn-hbss-dcc-application')]"
+                "[resourceId('Microsoft.Network/virtualNetworks', 'vNet-HBSS-DCC')]"
             ],
             "properties": {
                 "addressPrefix": "10.0.1.0/24",
@@ -111,25 +96,10 @@
         {
             "type": "Microsoft.Network/virtualNetworks/subnets",
             "apiVersion": "2020-11-01",
-            "name": "vNet-HBSS-DCC/sn-hbss-dcc-presentation",
-            "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualNetworks', 'vNet-HBSS-DCC')]",
-                "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'vNet-HBSS-DCC', 'sn-hbss-dcc-core')]"
-            ],
-            "properties": {
-                "addressPrefix": "10.0.5.0/24",
-                "delegations": [],
-                "privateEndpointNetworkPolicies": "Enabled",
-                "privateLinkServiceNetworkPolicies": "Enabled"
-            }
-        },
-        {
-            "type": "Microsoft.Network/virtualNetworks/subnets",
-            "apiVersion": "2020-11-01",
             "name": "vNet-HBSS-DCC/sn-hbss-dcc-probes",
             "dependsOn": [
                 "[resourceId('Microsoft.Network/virtualNetworks', 'vNet-HBSS-DCC')]",
-                "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'vNet-HBSS-DCC', 'sn-hbss-dcc-presentation')]"
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'vNet-HBSS-DCC', 'sn-hbss-dcc-core')]"
             ],
             "properties": {
                 "addressPrefix": "10.0.2.0/24",
@@ -141,10 +111,25 @@
         {
             "type": "Microsoft.Network/virtualNetworks/subnets",
             "apiVersion": "2020-11-01",
-            "name": "vNet-HBSS-DCC/sn-hbss-dcc-reception",
+            "name": "vNet-HBSS-DCC/sn-hbss-dcc-application",
             "dependsOn": [
                 "[resourceId('Microsoft.Network/virtualNetworks', 'vNet-HBSS-DCC')]",
                 "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'vNet-HBSS-DCC', 'sn-hbss-dcc-probes')]"
+            ],
+            "properties": {
+                "addressPrefix": "10.0.3.0/24",
+                "delegations": [],
+                "privateEndpointNetworkPolicies": "Enabled",
+                "privateLinkServiceNetworkPolicies": "Enabled"
+            }
+        },
+        {
+            "type": "Microsoft.Network/virtualNetworks/subnets",
+            "apiVersion": "2020-11-01",
+            "name": "vNet-HBSS-DCC/sn-hbss-dcc-reception",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', 'vNet-HBSS-DCC')]",
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'vNet-HBSS-DCC', 'sn-hbss-dcc-application')]"
             ],
             "properties": {
                 "addressPrefix": "10.0.4.0/24",
@@ -153,6 +138,37 @@
                 "privateLinkServiceNetworkPolicies": "Enabled"
             }
         },
+        {
+            "type": "Microsoft.Network/virtualNetworks/subnets",
+            "apiVersion": "2020-11-01",
+            "name": "vNet-HBSS-DCC/sn-hbss-dcc-presentation",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', 'vNet-HBSS-DCC')]",
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'vNet-HBSS-DCC', 'sn-hbss-dcc-reception')]"
+            ],
+            "properties": {
+                "addressPrefix": "10.0.5.0/24",
+                "delegations": [],
+                "privateEndpointNetworkPolicies": "Enabled",
+                "privateLinkServiceNetworkPolicies": "Enabled"
+            }
+        },
+        {
+            "type": "Microsoft.Network/virtualNetworks/subnets",
+            "apiVersion": "2020-11-01",
+            "name": "vNet-HBSS-DCC/sn-hbss-dcc-dmz",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', 'vNet-HBSS-DCC')]",
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'vNet-HBSS-DCC', 'sn-hbss-dcc-presentation')]"
+            ],
+            "properties": {
+                "addressPrefix": "10.0.6.0/24",
+                "delegations": [],
+                "privateEndpointNetworkPolicies": "Enabled",
+                "privateLinkServiceNetworkPolicies": "Enabled"
+            }
+        },
+
 
 
         {
@@ -172,24 +188,9 @@
         {
             "type": "Microsoft.Network/virtualNetworks/subnets",
             "apiVersion": "2020-11-01",
-            "name": "vNet-HBSS-SITE01/sn-hbss-site01-dmz",
-            "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualNetworks', 'vNet-HBSS-SITE01')]"
-            ],
-            "properties": {
-                "addressPrefix": "10.1.5.0/24",
-                "delegations": [],
-                "privateEndpointNetworkPolicies": "Enabled",
-                "privateLinkServiceNetworkPolicies": "Enabled"
-            }
-        },
-        {
-            "type": "Microsoft.Network/virtualNetworks/subnets",
-            "apiVersion": "2020-11-01",
             "name": "vNet-HBSS-SITE01/sn-hbss-site01-core",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualNetworks', 'vNet-HBSS-SITE01')]",
-                "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'vNet-HBSS-SITE01', 'sn-hbss-site01-dmz')]"
+                "[resourceId('Microsoft.Network/virtualNetworks', 'vNet-HBSS-SITE01')]"
             ],
             "properties": {
                 "addressPrefix": "10.1.1.0/24",
@@ -198,6 +199,22 @@
                 "privateLinkServiceNetworkPolicies": "Enabled"
             }
         },
+        {
+            "type": "Microsoft.Network/virtualNetworks/subnets",
+            "apiVersion": "2020-11-01",
+            "name": "vNet-HBSS-SITE01/sn-hbss-site01-dmz",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', 'vNet-HBSS-SITE01')]",
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'vNet-HBSS-SITE01', 'sn-hbss-site01-core')]"
+            ],
+            "properties": {
+                "addressPrefix": "10.1.6.0/24",
+                "delegations": [],
+                "privateEndpointNetworkPolicies": "Enabled",
+                "privateLinkServiceNetworkPolicies": "Enabled"
+            }
+        },
+
 
         {
             "type": "Microsoft.Network/virtualNetworks",
@@ -216,24 +233,9 @@
         {
             "type": "Microsoft.Network/virtualNetworks/subnets",
             "apiVersion": "2020-11-01",
-            "name": "vNet-HBSS-SITE02/sn-hbss-site02-dmz",
-            "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualNetworks', 'vNet-HBSS-SITE02')]"
-            ],
-            "properties": {
-                "addressPrefix": "10.2.5.0/24",
-                "delegations": [],
-                "privateEndpointNetworkPolicies": "Enabled",
-                "privateLinkServiceNetworkPolicies": "Enabled"
-            }
-        },
-        {
-            "type": "Microsoft.Network/virtualNetworks/subnets",
-            "apiVersion": "2020-11-01",
             "name": "vNet-HBSS-SITE02/sn-hbss-site02-core",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualNetworks', 'vNet-HBSS-SITE02')]",
-                "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'vNet-HBSS-SITE02', 'sn-hbss-site02-dmz')]"
+                "[resourceId('Microsoft.Network/virtualNetworks', 'vNet-HBSS-SITE02')]"
             ],
             "properties": {
                 "addressPrefix": "10.2.1.0/24",
@@ -242,7 +244,22 @@
                 "privateLinkServiceNetworkPolicies": "Enabled"
             }
         },
-        
+        {
+            "type": "Microsoft.Network/virtualNetworks/subnets",
+            "apiVersion": "2020-11-01",
+            "name": "vNet-HBSS-SITE02/sn-hbss-site02-dmz",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', 'vNet-HBSS-SITE02')]",
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'vNet-HBSS-SITE02', 'sn-hbss-site02-core')]"
+            ],
+            "properties": {
+                "addressPrefix": "10.2.6.0/24",
+                "delegations": [],
+                "privateEndpointNetworkPolicies": "Enabled",
+                "privateLinkServiceNetworkPolicies": "Enabled"
+            }
+        },
+
         {
             "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
             "apiVersion": "2020-11-01",
@@ -397,6 +414,6 @@
                 }
             }
         }
-       
+
     ]
 }
