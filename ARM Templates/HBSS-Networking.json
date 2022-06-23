@@ -267,7 +267,7 @@
             "dependsOn": [
                 "[resourceId('Microsoft.Network/virtualNetworks', 'vNet-HBSS-MGMT')]",
                 "[resourceId('Microsoft.Network/virtualNetworks', 'vNet-HBSS-DCC')]",
-                "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'vNet-HBSS-DCC', 'sn-hbss-dcc-reception')]"
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'vNet-HBSS-DCC', 'sn-hbss-dcc-dmz')]"
             ],
             "properties": {
                 "peeringState": "Connected",
@@ -292,7 +292,7 @@
             "dependsOn": [
                 "[resourceId('Microsoft.Network/virtualNetworks', 'vNet-HBSS-DCC')]",
                 "[resourceId('Microsoft.Network/virtualNetworks', 'vNet-HBSS-MGMT')]",
-                "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'vNet-HBSS-DCC', 'sn-hbss-dcc-reception')]"
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'vNet-HBSS-DCC', 'sn-hbss-dcc-dmz')]"
             ],
             "properties": {
                 "peeringState": "Connected",
@@ -317,8 +317,8 @@
             "dependsOn": [
                 "[resourceId('Microsoft.Network/virtualNetworks', 'vNet-HBSS-MGMT')]",
                 "[resourceId('Microsoft.Network/virtualNetworks', 'vNet-HBSS-SITE01')]",
-                "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'vNet-HBSS-DCC', 'sn-hbss-dcc-reception')]",
-                "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'vNet-HBSS-SITE01', 'sn-hbss-site01-core')]"
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'vNet-HBSS-DCC', 'sn-hbss-dcc-dmz')]",
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'vNet-HBSS-SITE01', 'sn-hbss-site01-dmz')]"
             ],
             "properties": {
                 "peeringState": "Connected",
@@ -343,8 +343,8 @@
             "dependsOn": [
                 "[resourceId('Microsoft.Network/virtualNetworks', 'vNet-HBSS-SITE01')]",
                 "[resourceId('Microsoft.Network/virtualNetworks', 'vNet-HBSS-MGMT')]",
-                "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'vNet-HBSS-DCC', 'sn-hbss-dcc-reception')]",
-                "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'vNet-HBSS-SITE01', 'sn-hbss-site01-core')]"
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'vNet-HBSS-DCC', 'sn-hbss-dcc-dmz')]",
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'vNet-HBSS-SITE01', 'sn-hbss-site01-dmz')]"
             ],
             "properties": {
                 "peeringState": "Connected",
@@ -369,8 +369,8 @@
             "dependsOn": [
                 "[resourceId('Microsoft.Network/virtualNetworks', 'vNet-HBSS-MGMT')]",
                 "[resourceId('Microsoft.Network/virtualNetworks', 'vNet-HBSS-SITE02')]",
-                "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'vNet-HBSS-DCC', 'sn-hbss-dcc-reception')]",
-                "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'vNet-HBSS-SITE02', 'sn-hbss-site02-core')]"
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'vNet-HBSS-DCC', 'sn-hbss-dcc-dmz')]",
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'vNet-HBSS-SITE02', 'sn-hbss-site02-dmz')]"
             ],
             "properties": {
                 "peeringState": "Connected",
@@ -395,8 +395,8 @@
             "dependsOn": [
                 "[resourceId('Microsoft.Network/virtualNetworks', 'vNet-HBSS-SITE02')]",
                 "[resourceId('Microsoft.Network/virtualNetworks', 'vNet-HBSS-MGMT')]",
-                "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'vNet-HBSS-DCC', 'sn-hbss-dcc-reception')]",
-                "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'vNet-HBSS-SITE02', 'sn-hbss-site02-core')]"
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'vNet-HBSS-DCC', 'sn-hbss-dcc-dmz')]",
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'vNet-HBSS-SITE02', 'sn-hbss-site02-dmz')]"
             ],
             "properties": {
                 "peeringState": "Connected",
